@@ -2,6 +2,10 @@ package cgb.utils;
 
 import org.apache.commons.validator.routines.IBANValidator;
 
+import cgb.transfer.exception.InvalidIbanException;
+import cgb.transfer.exception.InvalidIbanFormatException;
+import cgb.transfer.exception.InvalidUnCheckableIbanException;
+
 public class CGBIbanValidator {
 
 	private static CGBIbanValidator instance;
@@ -9,7 +13,6 @@ public class CGBIbanValidator {
 	private CGBIbanValidator() {
 
 	}
-
 	/**
 	 * Singleton de CGBIbanValidator
 	 * 
@@ -35,11 +38,11 @@ public class CGBIbanValidator {
 	 * 
 	 * @return Si la structure de l'iban est valide: true
 	 */
-	public boolean isIbanStructureValid(String iban) {
+	public boolean isIbanStructureValid(String iban) throws InvalidIbanFormatException {
 		if (iban.matches("^FR[0-9]{25}$")) {
 			return true;
 		}
-		return false;
+		throw new InvalidIbanFormatException();
 	}
 
 	/**
@@ -48,12 +51,12 @@ public class CGBIbanValidator {
 	 * @return Si la structure et les données de l'iban sont valide (verification du
 	 *         CRC): true
 	 */
-	public boolean isIbanValid(String iban) {
+	public boolean isIbanValid(String iban) throws InvalidUnCheckableIbanException {
 		IBANValidator validator = IBANValidator.getInstance();
 		if (validator.isValid(iban)) {
 			return true;
 		}
-		return false;
+		throw new InvalidUnCheckableIbanException();
 	}
 
 	/**
