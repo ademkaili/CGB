@@ -26,7 +26,7 @@ public class TransferRestController {
     
 
     @PostMapping
-    public ResponseEntity<?> createTransfer(@RequestBody TransferRequest transferRequest) {
+    public ResponseEntity<?> createTransfer(@RequestBody TransferRequest transferRequest) throws InvalidAccountException, DateTransferException, NegativeTransferAmountException, InsufficientFundsException {
     //public ResponseEntity<Transfer> createTransfer(@RequestBody TransferRequest transferRequest) {
         try {
     	Transfer transfer = transferService.createTransfer(
