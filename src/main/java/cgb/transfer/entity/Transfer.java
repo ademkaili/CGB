@@ -3,6 +3,8 @@ package cgb.transfer.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 @Entity
 public class Transfer {
@@ -14,7 +16,8 @@ public class Transfer {
     private Double amount;
     private LocalDate transferDate;
     private String description;
-
+	private String state;
+    
     // Getters and Setters with lombok
     
     public Long getId() {
@@ -52,6 +55,23 @@ public class Transfer {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "batch_id")
+    @JsonBackReference
+    private BatchTransfer batch_id;
+
+	public BatchTransfer getBatch_id() {
+		return batch_id;
+	}
+	public void setBatch_id(BatchTransfer batch_id) {
+		this.batch_id = batch_id;
+	}
+    public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
 	}
 
 }

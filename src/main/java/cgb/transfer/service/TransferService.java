@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cgb.transfer.entity.Account;
+import cgb.transfer.entity.State;
 import cgb.transfer.entity.Transfer;
 import cgb.transfer.exception.*;
 import cgb.transfer.exception.DeleteTransferException.FailureTransfert;
@@ -35,7 +36,7 @@ public class TransferService {
         transfer.setDescription(description);
 		Optional<Account> sourceAccount = accountRepository.findById(sourceAccountNumber);
 		Optional<Account> destinationAccount = accountRepository.findById(destinationAccountNumber);
-
+		
 		if (!sourceAccount.isPresent()) {
 			throw new InvalidAccountException("source");
 		}
@@ -58,6 +59,51 @@ public class TransferService {
 
 			return transferRepository.save(transfer);
 		}
+	}
+	
+	@Transactional
+	public Transfer createTransferForBatch(String sourceAccountNumber, String destinationAccountNumber, Double amount, LocalDate transferDate, String description) throws InvalidAccountException, DateTransferException, NegativeTransferAmountException, InsufficientFundsException {
+		Transfer transfer = new Transfer();
+        transfer.setSourceAccountNumber(sourceAccountNumber);
+        transfer.setDestinationAccountNumber(destinationAccountNumber);
+        transfer.setAmount(amount);
+        transfer.setTransferDate(transferDate);
+        transfer.setDescription(description);
+        transfer.setState(State.WAITING.getNom());
+        transferRepository.save(transfer);
+
+        Optional<Account> sourceAccount = accountRepository.findById(sourceAccountNumber);
+
+        if (!sourceAccount.isPresent()) {
+            transfer.setState(State.FAILURE.getNom());
+            return transferRepository.save(transfer);
+        }
+
+        Optional<Account> destinationAccount = accountRepository.findById(destinationAccountNumber);
+
+        if (!destinationAccount.isPresent()) {
+            transfer.setState(State.FAILURE.getNom());
+            return transferRepository.save(transfer);
+        }
+        if (transferDate.isBefore(LocalDate.now())) {
+            transfer.setState(State.FAILURE.getNom());
+            return transferRepository.save(transfer);
+        } else if (amount < 0) {
+            transfer.setState(State.FAILURE.getNom());
+            return transferRepository.save(transfer);
+        } else if (sourceAccount.get().getSolde().compareTo(amount) < 0) {
+            transfer.setState(State.CANCELED.getNom());
+            return transferRepository.save(transfer);
+        } else {
+            sourceAccount.get().setSolde(sourceAccount.get().getSolde() - (amount));
+            destinationAccount.get().setSolde(destinationAccount.get().getSolde() + (amount));
+
+            accountRepository.save(sourceAccount.get());
+            accountRepository.save(destinationAccount.get());
+
+            transfer.setState(State.SUCCESS.getNom());
+            return transferRepository.save(transfer);
+        }
 	}
 
 	@Transactional
