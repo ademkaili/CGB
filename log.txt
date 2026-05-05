@@ -25,3 +25,15 @@
 2026-05-05 15:55:00 | Batch refrence: 2026-05-05-1 | Creating Batch succeeded
 2026-05-05 15:55:00 | Batch reference: 2026-05-05-1 | Batch Transfers completed
 2026-05-05 15:55:02 | Batch reference: 2026-05-05-1 | Notification email sent successfully
+2026-05-05 16:08:04 | Batch refrence: 2026-05-05-1 | Creating Batch succeeded
+2026-05-05 16:08:04 | Batch reference: 2026-05-05-1 | Batch Transfers completed
+2026-05-05 16:08:05 | Batch reference: 2026-05-05-1 | Notification email sent successfully
+2026-05-05 16:14:24 | Batch refrence: 2026-05-05-1 | Creating Batch succeeded
+2026-05-05 16:14:25 | Batch reference: 2026-05-05-1 | Batch Transfers completed
+2026-05-05 16:14:26 | Batch reference: 2026-05-05-1 | Notification email sent successfully
+2026-05-05 16:39:02 | Batch refrence: 2026-05-05-1 | Creating Batch succeeded
+2026-05-05 16:39:02 | Batch reference: 2026-05-05-1 | Batch Transfers completed
+2026-05-05 16:39:03 | Batch reference: 2026-05-05-1 | Notification email sent successfully
+2026-05-05 16:52:17 | Batch refrence: 2026-05-05-2 | Creating Batch succeeded
+2026-05-05 16:52:17 | Batch reference: 2026-05-05-2 | Batch Transfers completed
+2026-05-05 16:52:18 | Batch reference: 2026-05-05-2 | Notification email sent successfully
