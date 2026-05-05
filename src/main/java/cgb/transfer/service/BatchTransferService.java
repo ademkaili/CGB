@@ -39,6 +39,9 @@ public class BatchTransferService {
 	@Autowired
 	private LogService logger;
 	
+	@Autowired
+    private MailService mail;
+	
 	/*
 	 * Rappel du cours sur les transactions... Tout ou rien
 	 */
@@ -52,17 +55,25 @@ public class BatchTransferService {
 		batch.setDescription(description);
 		batch.setDate(LocalDate.now());
 		batch.setState(State.RECEIVED.getNom());
+		batchTransferRepository.save(batch);
 		logger.log("Batch refrence: "+ batch.getRefLot() + " | Creating Batch succeeded");
 		if (!accountRepository.findById(sourceAccountNumber).isPresent()) {
             logger.log("Batch reference: "+ batch.getRefLot() + " | Invalid transfer: Source account doesn't exist");
 			throw new InvalidAccountException("Source");
 		}
+		int successCount = 0;
+        int failureCount = 0;
 		for (TransferRequest transferRequest: listTransfers) {
 			Transfer transfer = transferService.createTransferForBatch(sourceAccountNumber,
 					transferRequest.getDestinationAccountNumber(),
 					transferRequest.getAmount(),
 					LocalDate.now(),
 					description);
+			if (transfer.getState() == "success") {
+                successCount += 1;
+            } else {
+                failureCount += 1;
+            }
 
 			transfer.setBatch_id(batch);
 			batch.addTransfer(transfer);
@@ -72,6 +83,12 @@ public class BatchTransferService {
 		batch.setState(State.CLOSED.getNom());
 		logger.log("Batch reference: "+ batch.getRefLot() + " | Batch Transfers completed");
 		batchTransferRepository.save(batch);
+		try {
+            mail.sendBatchReport("comptable@gsb.fr", batch.getRefLot(), batch.getDate(), successCount, failureCount);
+            logger.log("Batch reference: " + batch.getRefLot() + " | Notification email sent successfully");
+        } catch (Exception e) {
+            logger.log("WARNING: Notification email failed for batch " + batch.getRefLot() + ". Error: " + e.getMessage());
+        }
 	}
 	
 	@Transactional
@@ -87,5 +104,8 @@ public class BatchTransferService {
     }
     public String generateRefLot() {
         return LocalDate.now().toString() + "-" + (countBatchTransfers(LocalDate.now()) + 1);
+    }
+    public BatchTransfer findBatchByRefLot(String refLot) {
+        return batchTransferRepository.findBatchByRefLot(refLot);
     }
 }

@@ -12,6 +12,7 @@ import cgb.transfer.repository.AccountRepository;
 import cgb.transfer.repository.TransferRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -114,4 +115,18 @@ public class TransferService {
 			throw new DeleteTransferException(FailureTransfert.OBJECT_NOT_FOUND);
 		return otranfer.orElse(null);
 	}
+	public List<Transfer> getTransferFromBatch(String refLot) {
+        return transferRepository.getTransferFromBatch(refLot);
+    }
+	public List<Transfer> findByRefLotAndNotSuccess(String refLot) {
+        return transferRepository.findByRefLotAndNotSuccess(refLot);
+    }
+
+    public List<Transfer> findByDateIntervalAndNotSuccess(LocalDate start, LocalDate end) {
+        return transferRepository.findByDateIntervalAndNotSuccess(start, end);
+    }
+
+    public List<Transfer> findByDestAccountAndNotSuccess(String destinationAccountNumber) {
+        return transferRepository.findByDestAccountAndNotSuccess(destinationAccountNumber);
+    }
 }
