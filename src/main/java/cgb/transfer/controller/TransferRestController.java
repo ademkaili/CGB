@@ -13,6 +13,7 @@ import cgb.transfer.service.TransferService;
 import cgb.transfer.exception.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -66,6 +67,23 @@ public class TransferRestController {
         return ResponseEntity.ok("Post bien traité: "+ s);
     } 
     */
+    @GetMapping("/failure/lot/{refLot}")
+    public ResponseEntity<?> findByRefLotAndNotSuccess(@PathVariable String refLot) {
+        List<Transfer> list = transferService.findByRefLotAndNotSuccess(refLot);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/failure/dates")
+    public ResponseEntity<?> findByDateIntervalAndNotSuccess(@RequestParam LocalDate start, LocalDate end) {
+        List<Transfer> list = transferService.findByDateIntervalAndNotSuccess(start, end);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/failure/destAcc/{destinationAccountNumber}")
+    public ResponseEntity<?> findByDestAccountAndNotSuccess(@PathVariable String destinationAccountNumber) {
+        List<Transfer> list = transferService.findByDestAccountAndNotSuccess(destinationAccountNumber);
+        return ResponseEntity.ok(list);
+    }
     
 }
 
@@ -96,4 +114,5 @@ class TransferResponse {
     public void setMessage(String message) {
         this.message = message;
     }
+    
 }

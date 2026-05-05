@@ -18,6 +18,7 @@ import cgb.transfer.exception.*;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -69,7 +70,14 @@ public class BatchTransferRestController {
 		} 
 	}
 
+	@GetMapping("/{refLot}")
+    public ResponseEntity<?> getTransfer(@PathVariable String refLot) {
+        BatchTransfer batch = batchTransferService.findBatchByRefLot(refLot);
+        List<Transfer> list = transferService.getTransferFromBatch(refLot);
+        batch.setListTransfers(list);
 
+        return ResponseEntity.ok(batch);
+    }
 
 	/*
     @PostMapping
