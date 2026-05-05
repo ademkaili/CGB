@@ -4,11 +4,10 @@ package cgb.transfer.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BatchTransferRequest {
-
-	private String refLot;
 	     
 	private String sourceAccountNumber;
 	   
@@ -16,10 +15,6 @@ public class BatchTransferRequest {
 
 	private List<TransferRequest> listTransfers;
 
-	public String getRefLot() {
-	    return refLot;}
-	public void setRefLot(String refLot) {
-	    this.refLot = refLot;}
 	public String getSourceAccountNumber() {
 	    return sourceAccountNumber;}
 	public void setSourceAccountNumber(String sourceAccountNumber) {

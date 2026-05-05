@@ -3,8 +3,9 @@ package cgb.transfer.dto;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TransferRequest {
     private String sourceAccountNumber;
     private String destinationAccountNumber;

@@ -78,6 +78,15 @@ public class BatchTransferRestController {
 
         return ResponseEntity.ok(batch);
     }
+	@GetMapping("/replay/{refLot}")
+    public ResponseEntity<?> getCancelledTransfer(@PathVariable String refLot) {
+        BatchTransferRequest batch = batchTransferService.findBatchByRefLotReplay(refLot);
+        List<TransferRequest> list = transferService.findByRefLotAndCancelled(refLot);
+        batch.setListTransfer(list);
+
+
+        return ResponseEntity.ok(batch);
+    }
 
 	/*
     @PostMapping

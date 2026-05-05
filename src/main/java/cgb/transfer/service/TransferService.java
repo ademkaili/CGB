@@ -3,6 +3,7 @@ package cgb.transfer.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cgb.transfer.dto.TransferRequest;
 import cgb.transfer.entity.Account;
 import cgb.transfer.entity.State;
 import cgb.transfer.entity.Transfer;
@@ -12,6 +13,7 @@ import cgb.transfer.repository.AccountRepository;
 import cgb.transfer.repository.TransferRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,6 +108,18 @@ public class TransferService {
             return transferRepository.save(transfer);
         }
 	}
+    public List<TransferRequest> findByRefLotAndCancelled(String refLot) {
+        List<TransferRequest> trq = new ArrayList<TransferRequest>();
+        List<Transfer> list = transferRepository.findByRefLotAndCancelled(refLot);
+        for (Transfer t : list){
+            TransferRequest temp = new TransferRequest();
+            temp.setDestinationAccountNumber(t.getDestinationAccountNumber());
+            temp.setAmount(t.getAmount());
+            temp.setDescription(t.getDescription());
+            trq.add(temp);
+        }
+        return trq;
+    }
 
 	@Transactional
 	public Transfer deleteTransfer(Long id) throws DeleteTransferException {
@@ -129,4 +143,5 @@ public class TransferService {
     public List<Transfer> findByDestAccountAndNotSuccess(String destinationAccountNumber) {
         return transferRepository.findByDestAccountAndNotSuccess(destinationAccountNumber);
     }
+    
 }
